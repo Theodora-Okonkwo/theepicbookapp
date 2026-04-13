@@ -33,5 +33,7 @@ steps:
       ansible-playbook -i inventory/hosts site.yml \
         --private-key ./epicbook_key \
         --ssh-common-args='-o StrictHostKeyChecking=no -o ForwardAgent=yes' \
-        -e "DB_PASSWORD=$(DB_PASSWORD)"
+        -e "db_password=$(DB_PASSWORD)"
     displayName: 'Run Ansible Playbook'
+    env:
+      DB_PASSWORD: $(DB_PASSWORD)
