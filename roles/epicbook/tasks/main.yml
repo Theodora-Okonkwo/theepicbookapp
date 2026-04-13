@@ -38,16 +38,9 @@
 
 - name: Wait for MySQL to be reachable
   shell: |
-    for i in $(seq 1 30); do
-      mysql -h {{ db_host }} -u {{ db_user }} -p'{{ db_password }}' \
-        -e "SELECT 1;" > /dev/null 2>&1 && echo "ready" && exit 0
-      echo "Attempt $i – waiting 10s"
-      sleep 10
-    done
-    echo "MySQL not reachable after 5 minutes" && exit 1
+    nc -zv {{ db_host }} 3306 && echo "ready"
   args:
     executable: /bin/bash
-  register: mysql_wait
   changed_when: false
 
 - name: Create database if not exists
@@ -103,4 +96,9 @@
   become_user: azureuser
   shell: |
     source ~/.nvm/nvm.sh
-    pm2 startup systemd -u azureuser --hp /home/azureuser --
+    pm2 startup systemd -u azureuser --hp /home/azureuser --no-daemon 2>/dev/null \
+      | grep "sudo" | bash
+  args:
+    executable: /bin/bash
+  ignore_errors: yes
+  changed_when: false
