@@ -1,0 +1,24 @@
+---
+- name: Prepare system (common)
+  hosts: all
+  become: true
+  roles:
+    - common
+
+- name: Install Node.js and PM2
+  hosts: backend
+  become: true
+  roles:
+    - nodejs
+
+- name: Deploy EpicBook application
+  hosts: backend
+  become: true
+  roles:
+    - epicbook
+
+- name: Install and configure Nginx
+  hosts: frontend
+  become: true
+  roles:
+    - nginx

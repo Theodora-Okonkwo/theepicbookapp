@@ -1,0 +1,32 @@
+trigger:
+  - main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+  - script: |
+      sudo apt-get update
+      sudo apt-get install -y ansible
+    displayName: 'Install Ansible'
+
+  - task: DownloadSecureFile@1
+    name: sshKey
+    inputs:
+      secureFile: 'id_rsa_azure'
+
+  - script: |
+      chmod 600 $(sshKey.secureFilePath)
+      cp $(sshKey.secureFilePath) ./epicbook_key
+    displayName: 'Set up SSH Key'
+
+  - script: |
+      sed -i 's/<FRONTEND_PUBLIC_IP>/$(FRONTEND_IP)/g' inventory/hosts
+      sed -i 's/<BACKEND_PRIVATE_IP>/$(BACKEND_IP)/g' inventory/hosts
+    displayName: 'Update Inventory with IPs'
+
+  - script: |
+      ansible-playbook -i inventory/hosts site.yml \
+        --private-key ./epicbook_key \
+        --ssh-common-args='-o StrictHostKeyChecking=no'
+    displayName: 'Run Ansible Playbook'

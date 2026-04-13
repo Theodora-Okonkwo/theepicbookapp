@@ -1,0 +1,5 @@
+[frontend]
+<FRONTEND_PUBLIC_IP> ansible_user=azureuser ansible_ssh_private_key_file=./epicbook_key
+
+[backend]
+<BACKEND_PRIVATE_IP> ansible_user=azureuser ansible_ssh_private_key_file=./epicbook_key
