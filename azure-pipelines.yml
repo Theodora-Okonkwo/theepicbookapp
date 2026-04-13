@@ -18,6 +18,8 @@ steps:
   - script: |
       chmod 600 $(sshKey.secureFilePath)
       cp $(sshKey.secureFilePath) ./epicbook_key
+      eval $(ssh-agent -s)
+      ssh-add ./epicbook_key
     displayName: 'Set up SSH Key'
 
   - script: |
@@ -26,7 +28,10 @@ steps:
     displayName: 'Update Inventory with IPs'
 
   - script: |
+      eval $(ssh-agent -s)
+      ssh-add ./epicbook_key
       ansible-playbook -i inventory/hosts site.yml \
         --private-key ./epicbook_key \
-        --ssh-common-args='-o StrictHostKeyChecking=no'
+        --ssh-common-args='-o StrictHostKeyChecking=no -o ForwardAgent=yes' \
+        -e "DB_PASSWORD=$(DB_PASSWORD)"
     displayName: 'Run Ansible Playbook'
