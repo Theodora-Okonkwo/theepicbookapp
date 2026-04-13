@@ -2,4 +2,4 @@
 20.43.26.112 ansible_user=azureuser ansible_ssh_private_key_file=./epicbook_key
 
 [backend]
-10.0.1.5 ansible_user=azureuser ansible_ssh_private_key_file=./epicbook_key
+10.0.1.5 ansible_user=azureuser ansible_ssh_private_key_file=./epicbook_key ansible_ssh_common_args='-o StrictHostKeyChecking=no -o ProxyJump=azureuser@20.43.26.112'
