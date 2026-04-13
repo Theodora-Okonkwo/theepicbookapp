@@ -6,4 +6,4 @@ app_port: 8080
 db_host: "epicbook-mysql-server.mysql.database.azure.com"
 db_name: "bookstore"
 db_user: "mysqladmin"
-db_password: "EpicBook@2024!"
+db_password: "{{ lookup('env', 'DB_PASSWORD') }}"
